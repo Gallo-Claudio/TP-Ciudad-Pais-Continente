@@ -92,7 +92,7 @@ public class testCiudadPaisContinente extends SpringTest {
 	
 	@Before
 	public void precargaDatos () {
-		continente1 = new Continente("Oceanía");
+		continente1 = new Continente("Oceanï¿½a");
 		continente2 = new Continente("America");
 		continente3 = new Continente("Africa");
 		continente4 = new Continente("Asia");
@@ -152,9 +152,9 @@ public class testCiudadPaisContinente extends SpringTest {
 		
 		pais1 = new Pais("Australia", 15100000, "Ingles", continente1);
 		pais2 = new Pais("Nueva Zelanda", 5100600, "Maori", continente1);
-		pais3 = new Pais("Argentina", 42300000, "Español", continente2);
+		pais3 = new Pais("Argentina", 42300000, "Espaï¿½ol", continente2);
 		pais4 = new Pais("Brasil", 58750000, "Portugues", continente2);
-		pais5 = new Pais("Perú", 27500000, "Español", continente2);
+		pais5 = new Pais("Perï¿½", 27500000, "Espaï¿½ol", continente2);
 		pais6 = new Pais("Senegal", 37850000, "Frances", continente3);
 		pais7 = new Pais("Nigeria", 41230000, "Ingles", continente3);
 		pais8 = new Pais("Marruecos", 38560000, "Arabe", continente3);
@@ -162,7 +162,7 @@ public class testCiudadPaisContinente extends SpringTest {
 		pais10 = new Pais("Arabia Saudita", 63521000, "Arabe", continente4);
 		pais11 = new Pais("India", 101500000, "Hindi", continente4);
 		pais12 = new Pais("China", 123150000, "Chino", continente4);
-		pais13 = new Pais("España", 45623000, "Español", continente5);
+		pais13 = new Pais("Espaï¿½a", 45623000, "Espaï¿½ol", continente5);
 		pais14 = new Pais("Italia", 41200000, "Italiano", continente5);
 		pais15 = new Pais("Francia", 40390000, "Frances", continente5);
 
@@ -186,7 +186,7 @@ public class testCiudadPaisContinente extends SpringTest {
 		ciudad18 = new Ciudad("Madrd", pais13, coordenadas18);
 		ciudad19 = new Ciudad("Valencia", pais13, coordenadas19);
 		ciudad20 = new Ciudad("Roma", pais14, coordenadas20);
-		ciudad21 = new Ciudad("Nápoles", pais14, coordenadas21);
+		ciudad21 = new Ciudad("Nï¿½poles", pais14, coordenadas21);
 		ciudad22 = new Ciudad("Paris", pais15, coordenadas22);
 		ciudad23 = new Ciudad("Lyon", pais15, coordenadas23);
 		getSession().save(ciudad1);
@@ -293,6 +293,42 @@ public class testCiudadPaisContinente extends SpringTest {
 		}
 	}
 
+	@Test
+	@Transactional
+	@Rollback (true)
+	public void testQueBuscaTodosLosPaisesDelContinenteEuropeo() {
+		List <Pais> continenteEuropeo = getSession().createCriteria(Pais.class)
+				.createAlias("continente", "buscaPaises")
+				.add(Restrictions.eq("buscaPaises.nombre", "Europa"))
+				.list();
+		
+		Integer valorEsperado = 3;
+		Integer valorObtenido = continenteEuropeo.size();
+		assertEquals(valorEsperado, valorObtenido);
+		
+
+		for (Pais registro: continenteEuropeo) {
+			assertThat(registro.getContinente().getNombre()).isEqualTo("Europa");
+		}
+	}
+
+	@Test
+	@Transactional
+	@Rollback (true)
+	public void testQueBuscaTodasLasCiudadesDelHemisferioSur() {		
+		List <Ciudad> hemisferioSur = getSession().createCriteria(Ciudad.class)
+				.createAlias("ubicacion", "buscaLatitud")
+				.add(Restrictions.lt("buscaLatitud.latitud", 0.0D))
+				.list();
+
+		Integer valorEsperado = 9;
+		Integer valorObtenido = hemisferioSur.size();
+		assertEquals(valorEsperado, valorObtenido);
+		
+		for (Ciudad registro: hemisferioSur) {
+			assertTrue(registro.getUbicacion().getLatitud()<0.0D);
+		}
+	}
 
 
 }
