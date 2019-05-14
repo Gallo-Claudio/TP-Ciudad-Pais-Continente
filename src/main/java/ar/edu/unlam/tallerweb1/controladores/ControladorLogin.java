@@ -75,11 +75,24 @@ public class ControladorLogin {
 	@RequestMapping("/texto/{operacion}/{cadena}")
 	public ModelAndView transformar (@PathVariable ("operacion") String operacion, @PathVariable("cadena") String cadena) {
 		ModelMap opera = new ModelMap();
+		String cambio = "";
+		Integer longitud = 0;
 		
 		if(operacion.equalsIgnoreCase("invertirOrden")){
 			StringBuilder builder=new StringBuilder(cadena);
 			String invertida = builder.reverse().toString();
 			opera.put("hace", invertida);
+		}else if(operacion.equalsIgnoreCase("pasarAMayuscula")){
+			cambio = cadena.toUpperCase();
+			opera.put("hace", cambio);
+		}
+		else if(operacion.equalsIgnoreCase("cantidadDeCaracteres")){
+			longitud = cadena.length();
+			opera.put("hace", longitud);		
+		}
+		else if(operacion.equalsIgnoreCase("pasarAMiniscula")){
+			cambio = cadena.toLowerCase();
+			opera.put("hace", cambio);
 		}
 		
 		
